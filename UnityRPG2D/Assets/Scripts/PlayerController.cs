@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
     public Animator myAnim;
     public static PlayerController instance;
     public string areaTransitionName;
+    private Vector3 bottomLeftLimit;
+    private Vector3 topRightLimit;
 
     // Start is called before the first frame update
     void Start()
@@ -17,7 +19,9 @@ public class PlayerController : MonoBehaviour
             instance = this;
         } else 
         {
-            Destroy(gameObject);
+            if(instance != this){
+                Destroy(gameObject);
+            }
         }
         DontDestroyOnLoad(gameObject);
     }
@@ -34,5 +38,15 @@ public class PlayerController : MonoBehaviour
             myAnim.SetFloat("lastMoveX", Input.GetAxisRaw("Horizontal"));
             myAnim.SetFloat("lastMoveY", Input.GetAxisRaw("Vertical"));
         }
+
+        //Keep player inside the Map
+        transform.position = new Vector3(Mathf.Clamp(transform.position.x, bottomLeftLimit.x, topRightLimit.x), Mathf.Clamp(transform.position.y, bottomLeftLimit.y, topRightLimit.y), transform.position.z);
+    }
+
+    // Get Bounds Function
+    public void getBounds(Vector3 bottomLeft, Vector3 topRight)
+    {
+        bottomLeftLimit = bottomLeft + new Vector3 (.5f, .5f, 0f);
+        topRightLimit = topRight + new Vector3 (-.5f, -.5f, 0f);
     }
 }
