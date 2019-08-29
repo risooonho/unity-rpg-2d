@@ -5,16 +5,16 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Test.unity
     guid: fade259916ef0324894d5e5de7eadc47
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Test2.unity
     guid: fb83d3564adc84874a266a9bdd093425
   - enabled: 1
-    path: Assets/Scenes/Countryside.unity
-    guid: 5bb3720b9e0604f7f9f0b4f9874da070
-  - enabled: 1
     path: Assets/Scenes/Town.unity
     guid: 2eb6026c3ae414f53a6f96b30337aab0
+  - enabled: 1
+    path: Assets/Scenes/Countryside.unity
+    guid: 5bb3720b9e0604f7f9f0b4f9874da070
   m_configObjects: {}
