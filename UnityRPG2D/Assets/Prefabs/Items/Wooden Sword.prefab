@@ -104,5 +104,5 @@ MonoBehaviour:
   affectHp: 0
   affectMp: 0
   affectStr: 0
-  weaponStrenght: 5
+  weaponStrength: 2
   armorStrength: 0
