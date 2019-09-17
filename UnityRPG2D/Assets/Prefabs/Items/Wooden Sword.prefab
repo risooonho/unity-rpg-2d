@@ -98,7 +98,7 @@ MonoBehaviour:
   isArmor: 0
   itemName: Wooden Sword
   description: Not very strong
-  value: 25
+  value: 10
   itemSprite: {fileID: 21300074, guid: 0bc4ed27aef38a44bb72e80f9beb5326, type: 3}
   amountToChange: 50
   affectHp: 0
