@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class GameMenu : MonoBehaviour
 {   
     public GameObject theMenu;
@@ -29,6 +30,8 @@ public class GameMenu : MonoBehaviour
 
     public Text goldText;
 
+    public string mainMenuName;
+
     public static GameMenu instance;
     // Start is called before the first frame update
     void Start()
@@ -51,6 +54,8 @@ public class GameMenu : MonoBehaviour
                 GameManager.instance.gameMenuOpen = true;
 
             }
+
+            AudioManager.instance.PlaySFX(5);
         }
     }
 
@@ -205,5 +210,26 @@ public class GameMenu : MonoBehaviour
     {
         activeItem.Use(selectChar);
         CloseItemCharChoice();
+    }
+
+    public void SaveGame()
+    {
+        QuestManager.instance.SaveQuestData();
+        GameManager.instance.SaveData();
+    }
+
+    public void PlaySoundButton()
+    {
+        AudioManager.instance.PlaySFX(4);
+    }
+
+    public void QuitGame()
+    {
+        SceneManager.LoadScene(mainMenuName);
+
+        Destroy(GameManager.instance.gameObject);
+        Destroy(PlayerController.instance.gameObject);
+        Destroy(AudioManager.instance.gameObject);
+        Destroy(gameObject);
     }
 }

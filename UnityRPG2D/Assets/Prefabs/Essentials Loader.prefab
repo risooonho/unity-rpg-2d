@@ -46,4 +46,6 @@ MonoBehaviour:
   UIScreen: {fileID: 6598573886069752669, guid: 0e3823407f26b4d20b0410f64f6f6374,
     type: 3}
   player: {fileID: 6211738905748343924, guid: f831b2e97dfdb48fa91879841db11f36, type: 3}
-  gameMan: {fileID: 0}
+  gameMan: {fileID: 4151776360285746739, guid: 8bf7f69d262ca4345822727f11f616ae, type: 3}
+  audioMan: {fileID: 3960641947750457494, guid: ff41aa41da8a6364a95e358ea3d6da3f,
+    type: 3}

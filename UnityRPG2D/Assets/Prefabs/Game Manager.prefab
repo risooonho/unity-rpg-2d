@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27effadd9c58544429b97fa85fd74e3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  charName: Woody
+  charName: Andy
   playerLevel: 3
   currentEXP: 543
   expToNextLevel: 
@@ -71,6 +71,7 @@ GameObject:
   m_Component:
   - component: {fileID: 617401379690661375}
   - component: {fileID: 7606467271432091906}
+  - component: {fileID: 7916390365217469165}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -165,6 +166,26 @@ MonoBehaviour:
   - {fileID: 3356609973549833302, guid: 92ff2d52919f93b4193c2b69e60644cc, type: 3}
   - {fileID: 7297980909533432150, guid: a7d71b3c2f7a68a489743f638de7d2be, type: 3}
   currentGold: 0
+--- !u!114 &7916390365217469165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4151776360285746739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0367cebf55f1624eaeb722d75bc8b72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  questMarkerName:
+  - 
+  - fight the demon
+  - enter the cave
+  - quest test
+  - save the world
+  - do something
+  questMarkersComplete: 
 --- !u!1 &4526142720941608778
 GameObject:
   m_ObjectHideFlags: 0
