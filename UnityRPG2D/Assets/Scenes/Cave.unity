@@ -5906,7 +5906,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 340882915}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.52, y: 6.06, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 379739724}
@@ -7772,7 +7772,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1337622988}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.58, y: 6.05, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 112697617}
@@ -14804,6 +14804,47 @@ MonoBehaviour:
   - {fileID: 4404671936954380992, guid: 86f53c068f0770a4596065817f70dff0, type: 3}
   - {fileID: 2403192068799481476, guid: dd0eff96802ee8347aae2dbd492b1434, type: 3}
   - {fileID: 1643177951569817978, guid: 68e9507e18485ec40a8733a64390051a, type: 3}
+  activeBattler: []
+  currentTurn: 0
+  turnWaiting: 0
+  uiButtonHolder: {fileID: 358895681}
+  moveList:
+  - moveName: Slash
+    movePower: 40
+    moveCost: 0
+    theEffect: {fileID: 524561474589748766, guid: 7c01c1f8cdd08524581a58c6a3c6c2e1,
+      type: 3}
+  - moveName: Fire
+    movePower: 50
+    moveCost: 5
+    theEffect: {fileID: 5076225895403103048, guid: d5ab4ba66ec8d2c4db43c920e9c7f9a3,
+      type: 3}
+  - moveName: Ice
+    movePower: 65
+    moveCost: 5
+    theEffect: {fileID: 7768518284094912266, guid: 7552bada29ade774f858e9eeecbd3619,
+      type: 3}
+  - moveName: Plasma
+    movePower: 85
+    moveCost: 10
+    theEffect: {fileID: 3741589273874655398, guid: 2cafdf9ec2c7cad40aa7503c5530adee,
+      type: 3}
+  enemyAttackEffect: {fileID: 7639936603396443285, guid: bf7f835f77a296f488f202aa37b08d6b,
+    type: 3}
+  theDamgeNumber: {fileID: 927042085960437287, guid: d37ff470e36e36b4fb5497f59ca55c07,
+    type: 3}
+  playerName:
+  - {fileID: 1460660005}
+  - {fileID: 1198076140}
+  - {fileID: 606471094}
+  playerHP:
+  - {fileID: 1299521976}
+  - {fileID: 1029227970}
+  - {fileID: 562109598}
+  playerMP:
+  - {fileID: 1245088423}
+  - {fileID: 1535425770}
+  - {fileID: 1219124312}
 --- !u!4 &1592345905
 Transform:
   m_ObjectHideFlags: 0
