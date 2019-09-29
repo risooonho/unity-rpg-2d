@@ -87,4 +87,34 @@ public class Item : MonoBehaviour
 
         GameManager.instance.RemoveItem(itemName);
     }
+
+    public BattleChar UseBattleItem(BattleChar selectedChar)
+    {   
+        BattleChar usedItemChar = selectedChar;
+        if(isItem)
+        {
+            if(affectHp){
+                usedItemChar.currentHp += amountToChange;
+                if(usedItemChar.currentHp > usedItemChar.maxHP)
+                {
+                    usedItemChar.currentHp = usedItemChar.maxHP;
+                }
+            }
+
+            if(affectMp){
+                usedItemChar.currentMp += amountToChange;
+                if(usedItemChar.currentMp > usedItemChar.maxMP)
+                {
+                    usedItemChar.currentMp = usedItemChar.maxMP;
+                }
+            }
+
+            if(affectStr)
+            {
+                usedItemChar.strength += amountToChange;
+            }
+        }
+        GameManager.instance.RemoveItem(itemName);
+        return usedItemChar;
+    }
 }

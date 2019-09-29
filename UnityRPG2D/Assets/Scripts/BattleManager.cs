@@ -26,6 +26,22 @@ public class BattleManager : MonoBehaviour
     public DamageNumber theDamgeNumber;
 
     public Text[] playerName, playerHP, playerMP;
+
+    public GameObject targetMenu;
+    public BattleTargetButton[] targetButtons;
+
+    public GameObject magicMenu;
+
+    public BattleMagicSelect[] magicButtons;
+    public BattleNotification battleNotice;
+
+    public int chanceToFlee = 35;
+
+    public Item activeItem;
+    public Text itemName, itemDescription;
+    public GameObject ItemsMenu;
+    public ItemButton[] battleUseItemsButtons;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -154,11 +170,20 @@ public class BattleManager : MonoBehaviour
             if(activeBattler[i].currentHp == 0)
             {
                 //Handle Dead battler
+                if(activeBattler[i].isPlayer)
+                {
+                    activeBattler[i].theSprite.sprite = activeBattler[i].deadSprite;
+                }else
+                {
+                    activeBattler[i].EnemyFade();
+                }
             }else
             {
                 if(activeBattler[i].isPlayer)
                 {
                     allPlayerDead = false;
+                    activeBattler[i].theSprite.sprite = activeBattler[i].aliveSprite;
+
                 }else
                 {
                     allEnemiesDead = false;
@@ -180,6 +205,16 @@ public class BattleManager : MonoBehaviour
             battleScene.SetActive(false);
             GameManager.instance.battleActive = false;
             battleActive = false;
+        }else
+        {
+            while(activeBattler[currentTurn].currentHp == 0)
+            {
+                currentTurn++;
+                if(currentTurn >= activeBattler.Count)
+                {
+                    currentTurn = 0;
+                }
+            }
         }
     }
 
@@ -259,6 +294,151 @@ public class BattleManager : MonoBehaviour
             {
                 playerName[i].gameObject.SetActive(false);
             }
+        }
+    }
+
+    public void PlayerAttack(string moveName, int selectedTarget)
+    {
+         int movePower = 0;
+        for(int i = 0; i < moveList.Length; i++)
+        {
+            if(moveList[i].moveName == moveName)
+            {
+                Instantiate(moveList[i].theEffect, activeBattler[selectedTarget].transform.position, activeBattler[selectedTarget].transform.rotation);
+                movePower = moveList[i].movePower;
+            }
+        }
+        Instantiate(enemyAttackEffect, activeBattler[currentTurn].transform.position, activeBattler[currentTurn].transform.rotation);
+        DealDame(selectedTarget, movePower);
+
+        uiButtonHolder.SetActive(false);
+        targetMenu.SetActive(false);
+
+        NextTurn();
+    }
+
+    public void OpenMenuTarget(string moveName)
+    {
+        targetMenu.SetActive(true);
+        List<int> Enemies = new List<int>();
+        for(int i = 0; i < activeBattler.Count; i++)
+        {
+            if(!activeBattler[i].isPlayer)
+            {
+                Enemies.Add(i);
+            }
+        }
+
+        for(int i = 0; i < targetButtons.Length; i++)
+        {
+            if(Enemies.Count > i && activeBattler[Enemies[i]].currentHp > 0)
+            {
+                targetButtons[i].gameObject.SetActive(true);
+                targetButtons[i].moveName = moveName;
+                targetButtons[i].activeBattlerTarget = Enemies[i];
+                targetButtons[i].targetName.text = activeBattler[Enemies[i]].charName;
+            }else
+            {
+                targetButtons[i].gameObject.SetActive(false);
+                
+            }
+        }
+    }
+
+    public void OpenMagicMenu()
+    {
+        magicMenu.SetActive(true);
+        for(int i = 0; i < magicButtons.Length; i++)
+        {
+            if(activeBattler[currentTurn].movesAvailable.Length > i)
+            {
+                magicButtons[i].gameObject.SetActive(true);
+
+                magicButtons[i].spellName = activeBattler[currentTurn].movesAvailable[i];
+                magicButtons[i].nameText.text = magicButtons[i].spellName;
+
+                for(int j = 0; j < moveList.Length; j++)
+                {
+                    if(moveList[j].moveName == magicButtons[i].spellName)
+                    {
+                        magicButtons[i].spellCost = moveList[j].moveCost;
+                        magicButtons[i].costText.text = magicButtons[i].spellCost.ToString();
+                    }
+                }
+
+            }else
+            {
+                magicButtons[i].gameObject.SetActive(false);
+            }
+        } 
+    }
+
+    public void Flee()
+    {
+        int fleeSuccess = Random.Range(0, 100);
+        if(fleeSuccess < chanceToFlee)
+        {
+            //end the battle
+            battleActive = false;
+            battleScene.SetActive(false);
+        }else
+        {
+            NextTurn();
+            battleNotice.theText.text = "Couldn't escape!";
+            battleNotice.Activate();
+        }
+    }
+
+    public void OpenItemsMenu()
+    {
+        ItemsMenu.SetActive(true);
+        ShowBattleItem();
+    }
+
+    public void CloseItemsMenu()
+    {
+        ItemsMenu.SetActive(false);
+    }
+
+    public void ShowBattleItem(){
+        GameManager.instance.SortItems();
+        for(int i = 0; i < battleUseItemsButtons.Length; i++){
+            battleUseItemsButtons[i].buttonValue = i;
+
+            if(GameManager.instance.itemsHeld[i] != "")
+            {
+                battleUseItemsButtons[i].buttonImage.gameObject.SetActive(true);
+                battleUseItemsButtons[i].buttonImage.sprite = GameManager.instance.GetItemDetail(GameManager.instance.itemsHeld[i]).itemSprite;
+                battleUseItemsButtons[i].amountText.text = GameManager.instance.numberOfItems[i].ToString();
+            }else
+            {
+                battleUseItemsButtons[i].buttonImage.gameObject.SetActive(false);
+                battleUseItemsButtons[i].amountText.text = "";             
+            }   
+        }
+    }
+
+    public void SelectedBattleItem(Item newItem)
+    {
+        activeItem = newItem;
+        itemName.text = activeItem.itemName;
+        itemDescription.text = activeItem.description;
+    }
+
+    public void UseBattleItem()
+    {   
+        if(activeItem.isItem)
+        {
+            BattleChar selectedChar = activeBattler[currentTurn];
+            activeBattler[currentTurn] = activeItem.UseBattleItem(selectedChar);
+            UpdateStatUI();
+            ItemsMenu.SetActive(false);
+            NextTurn();
+        }else
+        {
+            battleNotice.theText.text = "Choosen item can't use in battle";
+            battleNotice.Activate();
+            ItemsMenu.SetActive(false);
         }
     }
 }
