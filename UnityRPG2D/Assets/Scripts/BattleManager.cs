@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class BattleManager : MonoBehaviour
 {   
     public static BattleManager instance;
@@ -36,11 +37,19 @@ public class BattleManager : MonoBehaviour
     public BattleNotification battleNotice;
 
     public int chanceToFlee = 35;
+    private bool fleeing;
 
     public Item activeItem;
     public Text itemName, itemDescription;
     public GameObject ItemsMenu;
     public ItemButton[] battleUseItemsButtons;
+
+    public string gameOverScene;
+
+    public int rewardXP;
+    public string[] rewardItems;
+
+    public bool cannotFlee;
 
     // Start is called before the first frame update
     void Start()
@@ -54,7 +63,7 @@ public class BattleManager : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.T))
         {
-            BattleStart(new string[]{"Goblin", "Spider", "Skeleton"});
+            BattleStart(new string[]{"Goblin", "Spider", "Skeleton"}, false);
         }
 
         if(battleActive)
@@ -79,11 +88,12 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    public void BattleStart(string[] enemyToSpawn)
-    {
+    public void BattleStart(string[] enemyToSpawn , bool cantFlee)
+    {   
         if(!battleActive)
         {
             battleActive = true;
+            cannotFlee = cantFlee;
             GameManager.instance.battleActive = true;
             battleScene.SetActive(true);
             AudioManager.instance.PlayBGM(0);
@@ -197,14 +207,16 @@ public class BattleManager : MonoBehaviour
             if(allEnemiesDead)
             {   
                 //end battle in victory
+                StartCoroutine(EndBattleCo());
             } else
             {
                 //end battle in failure
+                StartCoroutine(GameOverCo());
             }
 
-            battleScene.SetActive(false);
-            GameManager.instance.battleActive = false;
-            battleActive = false;
+            // battleScene.SetActive(false);
+            // GameManager.instance.battleActive = false;
+            // battleActive = false;
         }else
         {
             while(activeBattler[currentTurn].currentHp == 0)
@@ -374,19 +386,29 @@ public class BattleManager : MonoBehaviour
     }
 
     public void Flee()
-    {
-        int fleeSuccess = Random.Range(0, 100);
-        if(fleeSuccess < chanceToFlee)
+    {   
+        if(cannotFlee)
         {
-            //end the battle
-            battleActive = false;
-            battleScene.SetActive(false);
-        }else
-        {
-            NextTurn();
-            battleNotice.theText.text = "Couldn't escape!";
+            battleNotice.theText.text = "Can not flee this battle";
             battleNotice.Activate();
+        } else
+        {
+          int fleeSuccess = Random.Range(0, 100);
+            if(fleeSuccess < chanceToFlee)
+            {
+                //end the battle
+                StartCoroutine(EndBattleCo());
+                fleeing = true;
+                // battleActive = false;
+                // battleScene.SetActive(false);
+            }else
+            {
+                NextTurn();
+                battleNotice.theText.text = "Couldn't escape!";
+                battleNotice.Activate();
+            }  
         }
+        
     }
 
     public void OpenItemsMenu()
@@ -440,5 +462,59 @@ public class BattleManager : MonoBehaviour
             battleNotice.Activate();
             ItemsMenu.SetActive(false);
         }
+    }
+
+    public IEnumerator EndBattleCo()
+    {
+        battleActive = false;
+        uiButtonHolder.SetActive(false);
+        targetMenu.SetActive(false);
+        magicMenu.SetActive(false);
+        ItemsMenu.SetActive(false);
+
+        yield return new WaitForSeconds(.5f);
+
+        UIFade.instance.FadeToBlack();
+
+        yield return new WaitForSeconds(1.5f);
+
+        for(int i = 0 ; i < activeBattler.Count; i++)
+        {
+            if(activeBattler[i].isPlayer)
+            {
+                for(int j = 0; j < GameManager.instance.playerStats.Length; j++)
+                {
+                    GameManager.instance.playerStats[j].currentHP = activeBattler[i].currentHp;
+                    GameManager.instance.playerStats[j].currentMP = activeBattler[i].currentMp;
+                }
+            }
+
+            Destroy(gameObject);
+        }
+
+        UIFade.instance.FadeFromBlack();
+        battleScene.SetActive(false);
+        activeBattler.Clear();
+        currentTurn = 0;
+        // GameManager.instance.battleActive = false;
+        if(fleeing)
+        {
+            GameManager.instance.battleActive = false;
+            fleeing = false;
+        }else
+        {
+            BattleRewards.instance.OpenRewardScreen(rewardXP, rewardItems);
+        }
+
+        AudioManager.instance.PlayBGM(FindObjectOfType<CameraController>().musicToPlay);
+    }
+
+    public IEnumerator GameOverCo()
+    {
+        battleActive = false;
+        UIFade.instance.FadeToBlack();
+        yield return new WaitForSeconds(1.5f);
+        battleScene.SetActive(false);
+        SceneManager.LoadScene(gameOverScene);
     }
 }
